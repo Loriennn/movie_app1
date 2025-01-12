@@ -44,4 +44,35 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 });
 
-export { registerUser };
+export {registerUser};
+
+// Login user
+// Route: POST /api/users/login
+const loginUser = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Find user in DB
+        const user = await User.findOne({ email });
+
+        // If user exists, compare password with the hashed password
+        if (user && (await bcrypt.compare(password, user.password))) {
+            res.json({
+                _id: user._id,
+                fullName: user.fullName,
+                email: user.email,
+                image: user.image,
+                isAdmin: user.isAdmin,
+                token: generateToken(user._id),
+            });
+        } else {
+            // If user is not found or password doesn't match, send an error message
+            res.status(401);
+            throw new Error("Invalid email or password");
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+export { loginUser };

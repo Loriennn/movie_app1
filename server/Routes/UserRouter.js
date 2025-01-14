@@ -3,7 +3,7 @@ import { registerUser } from '../Controllers/UserController.js';
 
 const router = express.Router ();
 
-// Routes //
+// Public Routes //
 
 router.post("/", registerUser);
 

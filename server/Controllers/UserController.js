@@ -76,3 +76,44 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 export { loginUser };
+
+// *private controller
+// update user profile
+// route: PUT /api/users/profile
+
+const updateUserProfile = asyncHandler(async (req, res) => {
+    const { fullName, email, image } = req.body;
+
+    try {
+        // Find user in DB
+        const user = await User.findById(req.user._id);
+
+        // If user exists, update user data and save it to DB
+        if (user) {
+            user.fullName = fullName || user.fullName;
+            user.email = email || user.email;
+            user.image = image || user.image;
+
+            const updatedUser = await user.save();
+
+            // Send updated user data and token to client
+            res.json({
+                _id: updatedUser._id,
+                fullName: updatedUser.fullName,
+                email: updatedUser.email,
+                image: updatedUser.image,
+                isAdmin: updatedUser.isAdmin,
+                token: generateToken(updatedUser._id),
+            });
+        } else {
+            // If user not found, send error
+            res.status(404);
+            throw new Error("User not found");
+        }
+    } catch (error) {
+        // Handle errors
+        res.status(400).json({ message: error.message });
+    }
+});
+
+export { updateUserProfile};

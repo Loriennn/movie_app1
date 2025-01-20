@@ -1,4 +1,4 @@
-const Movies = [
+ export const MoviesData = [
     {
       name: "Twin Peaks",
       language: "English",

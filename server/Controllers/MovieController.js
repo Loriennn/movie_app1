@@ -18,7 +18,7 @@ const importMovies= asyncHandler ( async (req, res) =>{
  const getMovies = asyncHandler ( async (req, res) =>) {
         try {
 
-            //filer movies by category, times, language, rate, year and search
+            //filer movies by category, times language, rate, year and search
             const { category, time, language, rate, year, search} = req.query;
             let query ={
                 ...( category && {category}),

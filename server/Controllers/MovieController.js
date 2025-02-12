@@ -33,7 +33,7 @@ const getMovies = asyncHandler(async (req, res) => {
         };
 
         // Pagination settings
-        const page = Number(pageNumber) || 1;
+        const page = parseInt(pageNumber) || 1;
         const limit = 2; // 2 movies per page
         const skip = (page - 1) * limit;
 
@@ -80,7 +80,7 @@ const getMovieById = asyncHandler(async (req, res) => {
 // Access: Public
 const getTopRatedMovies = asyncHandler(async (req, res) => {
     try {
-        const movies = await Movie.find().sort({ rate: -1 }).limit(5); // Get top 5 rated movies
+        const movies = await Movie.find().sort({ rating: -1 }).limit(5); // Get top 5 rated movies
         res.json(movies);
     } catch (error) {
         res.status(400).json({ message: error.message });

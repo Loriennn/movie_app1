@@ -2,47 +2,39 @@ import jwt from "jsonwebtoken";
 import User from "../Models/UserModels.js";
 import asyncHandler from "express-async-handler";
 
-//authenticated user and get token
+// Generate a JWT token
 const generateToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET, {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: "3d",
     });
 };
 
-// Protection middleware
+// Middleware to protect routes
 const protect = asyncHandler(async (req, res, next) => {
     let token;
 
-    // Check if token exists in headers
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith("Bearer")
-    ) {
+    if (req.headers.authorization?.startsWith("Bearer")) {
         try {
-            // Extract token
             token = req.headers.authorization.split(" ")[1];
 
-            // Verify token and decode user ID
+            // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            // Fetch user and attach to request object
+            // Fetch user (excluding password) and attach to request
             req.user = await User.findById(decoded.id).select("-password");
 
-            next(); // Proceed to the next middleware or route handler
+            return next();
         } catch (error) {
-            console.error(error);
-            res.status(401);
-            throw new Error("Not authorized, token failed");
+            res.status(401).json({ message: "Not authorized, token failed" });
+            return;
         }
     }
 
-    // If token is missing, return error
+    // If no token is found
     if (!token) {
-        res.status(401);
-        throw new Error("Not authorized, no token");
+        res.status(401).json({ message: "Not authorized, no token" });
+        return;
     }
 });
 
-
-
-export { generateToken, protect};
+export { generateToken, protect };

@@ -87,4 +87,20 @@ const getTopRatedMovies = asyncHandler(async (req, res) => {
     }
 });
 
-export { importMovies, getMovies, getMovieById, getTopRatedMovies };
+// Get random movies
+// Route: GET /api/movies/random
+// Access: Public
+const getRandomMovies = asyncHandler(async (req, res) => {
+    try {
+        // Find 10 random movies
+        const movies = await Movie.aggregate([{ $sample: { size: 10 } }]);
+
+        // Send random movies to the client
+        res.json(movies);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// Export all functions
+export { importMovies, getMovies, getMovieById, getTopRatedMovies, getRandomMovies };

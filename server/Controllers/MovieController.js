@@ -80,6 +80,11 @@ const createMovieReview = asyncHandler(async (req, res) => {
         const movie = await Movie.findById(req.params.id);
         const { rating, comment } = req.body;
 
+        if (!req.user) {
+            res.status(401);
+            throw new Error("Not authorized to review");
+        }
+
         if (!movie) {
             res.status(404);
             throw new Error("Movie not found");
@@ -101,13 +106,18 @@ const createMovieReview = asyncHandler(async (req, res) => {
             rating: Number(rating),
             comment,
         };
-
+        
+        // Push the new review to the reviews array
         movie.reviews.push(review);
         movie.numberOfReviews = movie.reviews.length;
+
+        // Calculate the new average rating
         movie.rate = movie.reviews.reduce((acc, item) => item.rating + acc, 0) / movie.reviews.length;
 
+        // Save the movie in the database
         await movie.save();
-
+        
+        // Send the new movie to the client
         res.status(201).json({ message: "Review added" });
     } catch (error) {
         res.status(400).json({ message: error.message });

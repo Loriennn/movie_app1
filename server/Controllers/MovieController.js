@@ -77,6 +77,7 @@ const getRandomMovies = asyncHandler(async (req, res) => {
 // Create a movie review
 const createMovieReview = asyncHandler(async (req, res) => {
     try {
+        //find movie by id in database
         const movie = await Movie.findById(req.params.id);
         const { rating, comment } = req.body;
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getMovies, importMovies } from "../Controllers/MovieController.js";
+import { getMovies, getRandomMovies, getTopRatedMovies, importMovies } from "../Controllers/MovieController.js";
 import { 
     updateUserProfile, 
     deleteUserProfile, 
@@ -17,7 +17,10 @@ const router = express.Router();
 
 // Public Routes
 router.get("/", getMovies);  
-router.post("/import", protect, admin, importMovies);  // Protected for admin
+router.post("/import", importMovies);  // Protected for admin
+router.get("/:id", getMovieById);
+router.get("/rated/top", getTopRatedMovies);
+router.get("/ramdom/all", getRandomMovies);
 
 // Private Routes
 router.put("/", protect, updateUserProfile);

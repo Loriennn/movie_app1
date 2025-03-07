@@ -100,6 +100,7 @@ const createMovieReview = asyncHandler(async (req, res) => {
             throw new Error("You already reviewed this movie");
         }
 
+        //else create a new review
         const review = {
             userName: req.user.fullName,
             userId: req.user._id,
@@ -125,12 +126,63 @@ const createMovieReview = asyncHandler(async (req, res) => {
     }
 });
 
+
+// ADMIN CONTROLLERS//
+
+
+
 // Update movie details (Admin only)
 const updateMovie = asyncHandler(async (req, res) => {
     try {
+
+        //get data from request body
+
+        const {
+            name,
+            desc,
+            image,
+            titleImage,
+            rate, 
+            numberOfReviews,
+            category,
+            time,
+            language,
+            year,
+            video,
+            casts
+        }
         const movie = await Movie.findById(req.params.id);
 
         if (!movie) {
+
+            //update movie data
+
+            // update movie data
+
+movie.name = name
+movie. name;
+
+movie.desc = desc || movie.desc;
+
+movie. image = image || movie. image;
+
+movie.titleImage = titleImage || movie.titleImage;
+
+movie. rate = rate || movie. rate;
+
+movie.number0fReviews = number0fReviews || movie.number0fReviews;
+
+movie. category = category || movie. category;
+
+movie-time = time Ì| movie. time;
+
+movie. language = language || movie. language;
+
+movie-year = year || movie-year;
+
+movie.video = video || movie.video;
+
+movie-casts = casts || movie.casts;
             res.status(404);
             throw new Error("Movie not found");
         }

@@ -9,6 +9,7 @@ const importMovies = asyncHandler(async (req, res) => {
         const movies = await Movie.insertMany(MoviesData);
         res.status(201).json({ message: "Movies imported successfully", movies });
     } catch (error) {
+        console.error(error); // Helpful for debugging
         res.status(400).json({ message: error.message });
     }
 });
@@ -36,6 +37,7 @@ const getMovies = asyncHandler(async (req, res) => {
 
         res.json({ movies, page, pages: Math.ceil(count / limit), totalMovies: count });
     } catch (error) {
+        console.error(error); // Helpful for debugging
         res.status(400).json({ message: error.message });
     }
 });
@@ -50,6 +52,7 @@ const getMovieById = asyncHandler(async (req, res) => {
         }
         res.json(movie);
     } catch (error) {
+        console.error(error); // Helpful for debugging
         res.status(400).json({ message: error.message });
     }
 });
@@ -60,6 +63,7 @@ const getTopRatedMovies = asyncHandler(async (req, res) => {
         const movies = await Movie.find().sort({ rating: -1 }).limit(5);
         res.json(movies);
     } catch (error) {
+        console.error(error); // Helpful for debugging
         res.status(400).json({ message: error.message });
     }
 });
@@ -70,6 +74,7 @@ const getRandomMovies = asyncHandler(async (req, res) => {
         const movies = await Movie.aggregate([{ $sample: { size: 10 } }]);
         res.json(movies);
     } catch (error) {
+        console.error(error); // Helpful for debugging
         res.status(400).json({ message: error.message });
     }
 });
@@ -77,7 +82,6 @@ const getRandomMovies = asyncHandler(async (req, res) => {
 // Create a movie review
 const createMovieReview = asyncHandler(async (req, res) => {
     try {
-        //find movie by id in database
         const movie = await Movie.findById(req.params.id);
         const { rating, comment } = req.body;
 
@@ -100,7 +104,7 @@ const createMovieReview = asyncHandler(async (req, res) => {
             throw new Error("You already reviewed this movie");
         }
 
-        //else create a new review
+        // Create a new review
         const review = {
             userName: req.user.fullName,
             userId: req.user._id,
@@ -108,7 +112,7 @@ const createMovieReview = asyncHandler(async (req, res) => {
             rating: Number(rating),
             comment,
         };
-        
+
         // Push the new review to the reviews array
         movie.reviews.push(review);
         movie.numberOfReviews = movie.reviews.length;
@@ -118,80 +122,46 @@ const createMovieReview = asyncHandler(async (req, res) => {
 
         // Save the movie in the database
         await movie.save();
-        
-        // Send the new movie to the client
+
         res.status(201).json({ message: "Review added" });
     } catch (error) {
+        console.error(error); // Helpful for debugging
         res.status(400).json({ message: error.message });
     }
 });
 
-
-// ADMIN CONTROLLERS//
-
-
-
 // Update movie details (Admin only)
 const updateMovie = asyncHandler(async (req, res) => {
     try {
+        const { name, desc, image, titleImage, rate, numberOfReviews, category, time, language, year, video, casts } = req.body;
 
-        //get data from request body
-
-        const {
-            name,
-            desc,
-            image,
-            titleImage,
-            rate, 
-            numberOfReviews,
-            category,
-            time,
-            language,
-            year,
-            video,
-            casts
-        }
         const movie = await Movie.findById(req.params.id);
 
         if (!movie) {
-
-            //update movie data
-
-            // update movie data
-
-movie.name = name
-movie. name;
-
-movie.desc = desc || movie.desc;
-
-movie. image = image || movie. image;
-
-movie.titleImage = titleImage || movie.titleImage;
-
-movie. rate = rate || movie. rate;
-
-movie.number0fReviews = number0fReviews || movie.number0fReviews;
-
-movie. category = category || movie. category;
-
-movie-time = time Ì| movie. time;
-
-movie. language = language || movie. language;
-
-movie-year = year || movie-year;
-
-movie.video = video || movie.video;
-
-movie-casts = casts || movie.casts;
             res.status(404);
             throw new Error("Movie not found");
         }
 
-        Object.assign(movie, req.body);
+        // Update movie fields if provided in the request body
+        movie.name = name || movie.name;
+        movie.desc = desc || movie.desc;
+        movie.image = image || movie.image;
+        movie.titleImage = titleImage || movie.titleImage;
+        movie.rate = rate || movie.rate;
+        movie.numberOfReviews = numberOfReviews || movie.numberOfReviews;
+        movie.category = category || movie.category;
+        movie.time = time || movie.time;
+        movie.language = language || movie.language;
+        movie.year = year || movie.year;
+        movie.video = video || movie.video;
+        movie.casts = casts || movie.casts;
+
+        // Save updated movie
         const updatedMovie = await movie.save();
 
         res.status(200).json({ message: "Movie updated successfully", updatedMovie });
     } catch (error) {
+        console.error(error); // Helpful for debugging
         res.status(400).json({ message: error.message });
     }
 });

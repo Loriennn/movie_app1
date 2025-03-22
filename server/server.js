@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import userRouter from "./Routes/UserRouter.js";
-import moviesRouter from "./Routes/MoviesRouter.js"
+import moviesRouter from "./Routes/MoviesRouter.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -18,17 +18,20 @@ app.use(express.json());
 // Connect to the database
 connectDB();
 
-// Main Routes
+// Main Route
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
-//other routes
+// Other routes
 app.use("/api/users", userRouter);
 app.use("/api/movies", moviesRouter);
 
-
-
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error(err.message);
+  res.status(500).json({ message: "Server Error" });
+});
 
 // Start the server
 app.listen(port, () => {

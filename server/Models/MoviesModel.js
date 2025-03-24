@@ -1,10 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
+// 影评 Schema
 const reviewSchema = new mongoose.Schema(
     {
         userName: { type: String, required: true },
         userImage: { type: String, required: true },
-        rating: { type: Number, required: true },
+        rating: { type: Number, required: true, min: 0, max: 5 },
         comment: { type: String, required: true },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -12,11 +13,10 @@ const reviewSchema = new mongoose.Schema(
             required: true,
         },
     },
-    {
-        timestamps: true,
-    }
+    { timestamps: true }
 );
 
+// 电影 Schema
 const moviesSchema = new mongoose.Schema(
     {
         userId: {
@@ -26,6 +26,7 @@ const moviesSchema = new mongoose.Schema(
         name: {
             type: String,
             required: true,
+            index: true, // 添加索引，加速查询
         },
         desc: {
             type: String,
@@ -42,6 +43,7 @@ const moviesSchema = new mongoose.Schema(
         category: {
             type: String,
             required: true,
+            index: true, // 添加索引
         },
         language: {
             type: String,
@@ -57,26 +59,29 @@ const moviesSchema = new mongoose.Schema(
         },
         video: {
             type: String,
+            required: false,
         },
         rate: {
             type: Number,
-            required: true,
             default: 0,
+            required: false,
         },
         numberOfReviews: {
             type: Number,
-            required: true,
             default: 0,
+            required: false,
         },
         reviews: [reviewSchema],
         casts: [
             {
                 name: { type: String, required: true },
                 image: { type: String, required: true },
+                character: { type: String, required: true }, // 新增字段
             },
         ],
     },
     { timestamps: true }
 );
 
-export default mongoose.model("Movies", moviesSchema);
+export default mongoose.model("Movie", moviesSchema);
+

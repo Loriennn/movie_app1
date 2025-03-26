@@ -41,10 +41,11 @@ const moviesSchema = new mongoose.Schema(
             required: true,
         },
         category: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category",
             required: true,
-            index: true, // 添加索引
         },
+        
         language: {
             type: String,
             required: true,

@@ -1,15 +1,27 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
+    const linkClass = ({ isActive }) =>
+        isActive
+            ? 'text-yellow-400 font-semibold'
+            : 'hover:text-gray-300';
+
     return (
-        <nav className="bg-gray-800 text-white p-4">
+        <nav className="bg-gray-800 text-white p-4 shadow">
             <div className="container mx-auto flex justify-between items-center">
-                <Link to="/" className="text-2xl font-bold">Movie App</Link>
+                <NavLink to="/" className="text-2xl font-bold">
+                    Movie App
+                </NavLink>
                 <div className="space-x-4">
-                    <Link to="/" className="hover:text-gray-300">Home</Link>
-                    <Link to="/top-rated" className="hover:text-gray-300">Top Rated</Link>
-                    <Link to="/random" className="hover:text-gray-300">Random</Link>
+                    <NavLink to="/" className={linkClass}>
+                        Home
+                    </NavLink>
+                    <NavLink to="/top-rated" className={linkClass}>
+                        Top Rated
+                    </NavLink>
+                    <NavLink to="/random" className={linkClass}>
+                        Random
+                    </NavLink>
                 </div>
             </div>
         </nav>

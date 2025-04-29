@@ -4,10 +4,10 @@ import './App.css';
 
 function App() {
     return (
-        <div className="App">
-            <AppRoutes />
-        </div>
+      <div className="text-4xl font-bold text-blue-500 p-4">
+        Tailwind is working! 🎉
+      </div>
     );
-}
-
+  }
+  
 export default App;
